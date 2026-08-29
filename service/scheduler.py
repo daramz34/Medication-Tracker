@@ -89,9 +89,8 @@ def check_and_send_reminders():
                     print(
                         f"Reminder sent to {user.email} for {medication.name} at {formatted_time}"
                     )
+            
 
-    except Exception as e:
-        print(f"Reminder job failed: {e}")
     except Exception as e:
         print(f"Reminder job failed: {e}")
         import traceback

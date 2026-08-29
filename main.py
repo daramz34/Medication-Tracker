@@ -63,11 +63,9 @@ def dashboard_page():
 def medications_page():
     return frontend_page("medications.html")
 # ✅ use /med/ instead of /medications/
-@app.get("/med/{med_id}", include_in_schema=False)
+@app.get("/medications/{med_id}", include_in_schema=False)
 def medication_detail_page(med_id: int):
     return frontend_page("medication-detail.html")
-
-
 
 @app.get("/settings", include_in_schema=False)
 def settings_page():
