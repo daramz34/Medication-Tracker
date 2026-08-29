@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Medication details · D-Med Tracker</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="app-page" data-page="detail">
+  <div class="app-shell">
+    <aside class="sidebar"><a class="brand" href="/app"><span class="brand-mark">＋</span><span class="brand-name">D-Med <span>Tracker</span></span></a><button class="mobile-menu" aria-label="Open navigation">☰</button>
+      <nav class="side-nav" aria-label="App navigation"><a href="/app"><span class="nav-icon">⌂</span>Overview</a><a class="active" href="/medications"><span class="nav-icon">＋</span>Medications</a><a href="/settings"><span class="nav-icon">⚙</span>Settings</a><a class="js-logout" href="#"><span class="nav-icon">↪</span>Sign out</a></nav>
+      <div class="side-bottom"><div class="user-mini"><span class="user-avatar js-avatar">D</span><div><strong class="js-username">Your account</strong><small>Personal space</small></div></div></div>
+    </aside>
+    <main class="main-content"><header class="topbar"><div><a class="back-link" href="/medications">← All medications</a><div id="detail-error" class="form-error hidden" role="alert"></div></div></header>
+      <section class="content-card section-card"><div class="detail-hero"><div class="detail-icon">＋</div><div><h2 id="detail-name">Loading…</h2><p id="detail-description">Loading details…</p><div id="detail-status" style="margin-top:9px"></div></div><div class="detail-actions"><button id="detail-edit" class="button button-soft button-small">Edit</button><button id="detail-complete" class="button button-ghost button-small">Mark complete</button></div></div>
+        <div class="detail-meta"><div class="meta-cell"><small>Dosage</small><strong id="detail-dosage">—</strong></div><div class="meta-cell"><small>Frequency</small><strong id="detail-frequency">—</strong></div><div class="meta-cell"><small>Started</small><strong id="detail-start">—</strong></div><div class="meta-cell"><small>Ends</small><strong id="detail-end">—</strong></div></div>
+      </section>
+      <div class="page-section"><section class="content-card"><div class="card-header"><h3>Medication history</h3><span class="muted" style="font-size:.75rem">Most recent first</span></div><div style="overflow-x:auto"><table class="history-table"><thead><tr><th>Date</th><th>Status</th><th>Taken at</th><th>Notes</th></tr></thead><tbody id="history-body"><tr><td colspan="4" class="empty-state">Loading history…</td></tr></tbody></table></div></section>
+        <section class="content-card"><div class="card-header"><h3>Course progress</h3><span class="fire">✦</span></div><div class="progress-wrap"><div class="progress-meta"><strong id="detail-progress">0%</strong><span>complete</span></div><div class="progress-bar"><i id="detail-progress-fill" style="width:0%"></i></div></div><div class="streak-row"><div><span class="fire">✦</span><strong>Current streak</strong></div><span id="detail-streak">0 days</span></div><div class="streak-row"><div><span>↗</span><strong>Best streak</strong></div><span id="detail-longest">0 days</span></div><div class="streak-row"><div><span>✓</span><strong>Total taken</strong></div><span id="detail-taken">0</span></div></section>
+      </div>
+    </main>
+  </div><div id="toast" class="toast" role="status"></div>
+  <script src="/static/api.js"></script><script src="/static/app.js"></script>
+</body>
+</html>

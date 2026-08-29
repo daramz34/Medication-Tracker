@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Medications · D-Med Tracker</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="app-page" data-page="medications">
+  <div class="app-shell">
+    <aside class="sidebar"><a class="brand" href="/app"><span class="brand-mark">＋</span><span class="brand-name">D-Med <span>Tracker</span></span></a><button class="mobile-menu" aria-label="Open navigation">☰</button>
+      <nav class="side-nav" aria-label="App navigation"><a href="/app"><span class="nav-icon">⌂</span>Overview</a><a class="active" href="/medications"><span class="nav-icon">＋</span>Medications</a><a href="/settings"><span class="nav-icon">⚙</span>Settings</a><a class="js-logout" href="#"><span class="nav-icon">↪</span>Sign out</a></nav>
+      <div class="side-bottom"><div class="user-mini"><span class="user-avatar js-avatar">D</span><div><strong class="js-username">Your account</strong><small>Personal space</small></div></div></div>
+    </aside>
+    <main class="main-content"><header class="topbar"><div><div class="eyebrow">Your routine</div><h1>Medications</h1><p>Keep every course and reminder in one place.</p></div><button id="add-medication" class="button button-primary">＋ Add medication</button></header>
+      <section class="content-card"><div class="toolbar"><div><h2>All medications</h2><p class="muted" style="font-size:.8rem;margin-top:4px">Edit a course or open it to see your history.</p></div><div class="search"><span>⌕</span><input id="med-search" type="search" placeholder="Search medications" aria-label="Search medications"></div></div><div id="med-list" class="med-list"><div class="empty-state">Loading your medications…</div></div></section>
+    </main>
+  </div>
+  <div id="med-modal" class="modal-backdrop hidden"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-header"><h2 id="modal-title">Add medication</h2><button id="close-modal" class="icon-button" aria-label="Close">×</button></div>
+    <form id="medication-form"><div class="form-row"><div class="form-field"><label for="med-name">Medication name</label><input id="med-name" name="name" required placeholder="e.g. Vitamin D"></div><div class="form-field"><label for="med-dosage">Dosage</label><input id="med-dosage" name="dosage" required placeholder="e.g. 1 tablet"></div></div>
+      <div class="form-field"><label for="med-description">Description</label><textarea id="med-description" name="description" placeholder="Any helpful details"></textarea></div>
+      <div class="form-row"><div class="form-field"><label for="med-frequency">Frequency</label><select id="med-frequency" name="frequency" required><option value="daily">Once daily</option><option value="twice_daily">Twice daily</option><option value="three_times_daily">Three times daily</option></select></div><div class="form-field"><label for="med-duration">Duration (days)</label><input id="med-duration" name="duration_days" type="number" min="1" required placeholder="30"></div></div>
+      <div class="form-row"><div class="form-field"><label for="med-start">Start date</label><input id="med-start" name="start_date" type="date" required></div><div class="form-field"><label for="med-time">Reminder time</label><input id="med-time" name="reminder_time" type="time" required></div></div>
+      <label class="checkbox"><input name="reminder_enabled" type="checkbox" checked> Remind me by email</label><button id="save-medication" class="button button-primary form-submit" type="submit">Save medication</button>
+    </form>
+  </section></div><div id="toast" class="toast" role="status"></div>
+  <script src="/static/api.js"></script><script src="/static/app.js"></script>
+</body>
+</html>

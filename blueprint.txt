@@ -1,0 +1,127 @@
+User
+├── id
+├── username (unique)
+├── email (unique)
+├── hashed_password
+├── created_at
+
+Medication
+├── id
+├── user_id (FK → User)
+├── name
+├── description
+├── dosage (e.g. "4 tablets")
+├── frequency (enum: once_daily, twice_daily, three_times_daily)
+├── duration_days (how many days the course lasts)
+├── start_date
+├── end_date (calculated: start_date + duration_days)
+├── status (enum: active, completed, abandoned)
+├── reminder_time (e.g. "08:00") 
+├── reminder_enabled (bool, default True)
+├── created_at
+
+MedicationLog
+├── id
+├── medication_id (FK → Medication)
+├── user_id (FK → User)
+├── date (the day this log is for)
+├── status (enum: taken, skipped, missed)
+├── taken_at (actual time user marked it taken, nullable)
+├── notes (optional)
+├── created_at
+
+Streak
+├── id
+├── user_id (FK → User)
+├── medication_id (FK → Medication)
+├── current_streak (int, default 0)
+├── longest_streak (int, default 0)
+├── total_taken (int, default 0)
+├── total_missed (int, default 0)
+├── total_skipped (int, default 0)
+├── completion_percentage (float, default 0.0)
+├── updated_at
+
+
+
+
+
+UserCreate     → username, email, password
+UserResponse   → id, username, email, created_at
+TokenResponse  → access_token, token_type
+
+MedicationCreate → name, description, dosage, frequency, 
+                   duration_days, start_date, reminder_time,
+                   reminder_enabled
+MedicationResponse → all fields including end_date, status
+MedicationUpdate → any field optional
+
+LogCreate  → medication_id, status, notes (optional)
+LogResponse → id, medication_id, date, status, taken_at, notes
+
+StreakResponse → medication_id, current_streak, longest_streak,
+                 total_taken, total_missed, total_skipped,
+                 completion_percentage
+
+
+
+
+
+USER:
+get_user_by_username(db, username) → User | None
+get_user_by_email(db, email) → User | None
+create_user(db, user: UserCreate) → User
+authenticate_user(db, username, password) → User | None
+
+MEDICATION:
+create_medication(db, medication: MedicationCreate, current_user: User) → Medication
+get_all_medications(db, current_user: User) → list[Medication]
+get_medication_by_id(db, medication_id, current_user: User) → Medication | None
+update_medication(db, medication_id, update: MedicationUpdate, current_user: User) → Medication | None
+delete_medication(db, medication_id, current_user: User) → Medication | None
+update_medication_status(db, medication_id, status, current_user: User) → Medication | None
+
+LOGS:
+create_log(db, log: LogCreate, current_user: User) → MedicationLog
+get_today_logs(db, current_user: User) → list[MedicationLog]
+get_medication_logs(db, medication_id, current_user: User) → list[MedicationLog]
+
+STREAK:
+get_or_create_streak(db, medication_id, user_id) → Streak
+update_streak(db, medication_id, user_id, log_status: LogStatus) → Streak
+
+HELPERS (internal functions, not endpoints):
+calculate_end_date(start_date, duration_days) → date
+calculate_completion_percentage(total_taken, duration_days) → float
+
+
+
+Two functions:
+
+send_reminder_email(user_email, username, medication_name, dosage, reminder_time)
+→ sends "time to take your medication" email
+→ called by scheduler every hour
+
+send_completion_email(user_email, username, medication_name)
+→ sends "you completed your medication course" email
+→ called when medication status changes to completed
+
+
+
+
+POST   /medications/              → create medication (201)
+GET    /medications/              → get all my medications (200)
+GET    /medications/{id}          → get single medication (200)
+PUT    /medications/{id}          → update medication (200)
+DELETE /medications/{id}          → delete medication (204)
+PATCH  /medications/{id}/status   → update medication status (200)
+
+POST /logs/                    → log medication intake (201)
+                               → returns 400 if already logged today
+                               → returns 404 if medication not found
+GET  /logs/today               → get today's logs (200)
+GET  /logs/{medication_id}     → get full log history for a medication (200)
+
+
+GET /streak/{medication_id}    → get streak stats for a medication (200)
+                               → returns 404 if streak not found

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Overview · D-Med Tracker</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="app-page" data-page="dashboard">
+  <div class="app-shell">
+    <aside class="sidebar"><a class="brand" href="/app"><span class="brand-mark">＋</span><span class="brand-name">D-Med <span>Tracker</span></span></a><button class="mobile-menu" aria-label="Open navigation">☰</button>
+      <nav class="side-nav" aria-label="App navigation"><a class="active" href="/app"><span class="nav-icon">⌂</span>Overview</a><a href="/medications"><span class="nav-icon">＋</span>Medications</a><a href="/settings"><span class="nav-icon">⚙</span>Settings</a><a class="js-logout" href="#"><span class="nav-icon">↪</span>Sign out</a></nav>
+      <div class="side-bottom"><div class="user-mini"><span class="user-avatar js-avatar">D</span><div><strong class="js-username">Your account</strong><small>Personal space</small></div></div></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar"><div><div class="eyebrow">Overview</div><h1>Good morning, <span class="js-username">there</span>.</h1><p>Here’s a clear view of your routine today.</p></div><a class="button button-primary" href="/medications">＋ <span class="desktop-only">Add medication</span><span class="mobile-only">Add</span></a></header>
+      <section class="stat-grid"><article class="stat-card"><div class="stat-label">Active medications</div><div class="stat-value" id="stat-active">—</div><div class="stat-detail">In your routine</div></article><article class="stat-card"><div class="stat-label">Taken today</div><div class="stat-value" id="stat-taken">—</div><div class="stat-detail">Nice work</div></article><article class="stat-card"><div class="stat-label">All medications</div><div class="stat-value" id="stat-total">—</div><div class="stat-detail">Courses tracked</div></article></section>
+      <div class="dashboard-grid">
+        <section class="content-card"><div class="card-header"><h2>My medications</h2><a class="text-link" href="/medications"><span id="medication-count">View all</span> →</a></div><div id="dashboard-medications" class="med-list"><div class="empty-state">Loading your routine…</div></div></section>
+        <section class="content-card"><div class="card-header"><h2>Your progress</h2><span class="fire">✦</span></div><div class="progress-wrap"><div class="progress-meta"><strong id="progress-value">0%</strong><span>course complete</span></div><div class="progress-bar"><i id="progress-fill" style="width:0%"></i></div></div><div class="streak-row"><div><span class="fire">✦</span><strong>Current streak</strong></div><span id="current-streak">0 days</span></div><div class="streak-row"><div><span>↗</span><strong>Longest streak</strong></div><span id="longest-streak">0 days</span></div></section>
+      </div>
+    </main>
+  </div><div id="toast" class="toast" role="status"></div>
+  <script src="/static/api.js"></script><script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sign in · D-Med Tracker</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="auth-page" data-page="auth">
+  <main class="auth-panel">
+    <aside class="auth-aside"><a class="brand" href="/"><span class="brand-mark">＋</span><span class="brand-name">D-Med <span>Tracker</span></span></a><h1>Care that fits<br>your day.</h1><p>A simple, reassuring way to keep your medication routine on track.</p><div class="quote">“The best routine is the one that feels easy to return to.”</div></aside>
+    <section class="auth-form" aria-labelledby="auth-heading"><a class="back-link" href="/">← Back to home</a><h2 id="auth-heading">Welcome back</h2><p id="auth-intro">Sign in to see your medication plan.</p>
+      <div class="auth-tabs"><button id="login-tab" class="auth-tab active" type="button">Sign in</button><button id="register-tab" class="auth-tab" type="button">Create account</button></div>
+      <form id="auth-form" novalidate>
+        <div id="name-field" class="form-field"><label id="username-label" for="auth-username">Username</label><input id="auth-username" name="username" autocomplete="username" required placeholder="Your username"></div>
+        <div id="email-field" class="form-field hidden"><label for="auth-email">Email address</label><input id="auth-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+        <div class="form-field"><label for="auth-password">Password</label><input id="auth-password" name="password" type="password" minlength="6" autocomplete="current-password" required placeholder="Your password"></div>
+        <div id="auth-error" class="form-error" role="alert"></div><button id="auth-submit" class="button button-primary form-submit" type="submit">Sign in</button>
+      </form>
+    </section>
+  </main>
+  <script src="/static/api.js"></script><script src="/static/app.js"></script>
+</body>
+</html>

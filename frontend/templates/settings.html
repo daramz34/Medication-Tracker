@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Settings · D-Med Tracker</title><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="app-page" data-page="settings">
+  <div class="app-shell">
+    <aside class="sidebar"><a class="brand" href="/app"><span class="brand-mark">＋</span><span class="brand-name">D-Med <span>Tracker</span></span></a><button class="mobile-menu" aria-label="Open navigation">☰</button>
+      <nav class="side-nav" aria-label="App navigation"><a href="/app"><span class="nav-icon">⌂</span>Overview</a><a href="/medications"><span class="nav-icon">＋</span>Medications</a><a class="active" href="/settings"><span class="nav-icon">⚙</span>Settings</a><a class="js-logout" href="#"><span class="nav-icon">↪</span>Sign out</a></nav>
+      <div class="side-bottom"><div class="user-mini"><span class="user-avatar js-avatar">D</span><div><strong class="js-username">Your account</strong><small>Personal space</small></div></div></div>
+    </aside>
+    <main class="main-content"><header class="topbar"><div><div class="eyebrow">Your space</div><h1>Settings</h1><p>Make D-Med Tracker feel right for you.</p></div></header>
+      <div class="settings-grid"><section class="content-card"><div class="card-header"><h2>Account</h2></div><div class="account-summary"><span class="user-avatar js-avatar">D</span><div><strong class="js-username">Your account</strong><p class="muted">Signed in to your personal medication space.</p></div></div><p class="muted" style="font-size:.78rem;margin-top:20px">Account details and password changes are managed by the authentication service.</p></section>
+        <section class="content-card"><div class="card-header"><h2>Reminder settings</h2></div><p class="muted" style="font-size:.86rem">Reminder times and email reminders are managed per medication. Open a medication to edit its reminder settings.</p><a class="button button-soft button-small" href="/medications">Manage medications</a></section>
+        <section class="content-card"><div class="card-header"><h2>About D-Med</h2></div><p class="muted" style="font-size:.86rem">D-Med Tracker helps you remember your routine and celebrate consistency. It is not a substitute for advice from your doctor or pharmacist.</p></section>
+      </div>
+    </main>
+  </div><div id="toast" class="toast" role="status"></div>
+  <script src="/static/api.js"></script><script src="/static/app.js"></script>
+</body>
+</html>
