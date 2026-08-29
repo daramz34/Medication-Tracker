@@ -80,10 +80,21 @@ p { margin: 0; }
   min-height: 44px;
   padding: 0 18px;
   transition: transform .2s, box-shadow .2s, background .2s;
+  
 }
 .button:hover { transform: translateY(-1px); }
-.button-primary { background: var(--teal); box-shadow: 0 8px 20px rgba(13, 148, 136, .2); color: #fff; }
-.button-primary:hover { background: var(--teal-dark); }
+.button-primary,
+a.button-primary,
+button.button-primary {
+  background: var(--teal);
+  box-shadow: 0 8px 20px rgba(13, 148, 136, .2);
+  color: #ffffff !important; /* Forces text to pure white */
+}
+
+.button-primary:hover {
+  background: var(--teal-dark);
+  color: #ffffff !important;
+}
 .button-soft { background: var(--mint); color: var(--teal-dark); }
 .button-ghost { background: transparent; color: var(--muted); }
 .button-danger { background: #fff1ef; color: #c95548; }
