@@ -8,3 +8,5 @@ SQLAlchemy==2.0.52
 starlette==1.6.0
 uvicorn[standard]
 pydantic[email]
+psycopg2-binary
+python-multipart
