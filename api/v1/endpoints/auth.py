@@ -48,31 +48,3 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get
         "token_type": "bearer"
     }
 
-
-@router.delete("/delete-user/{email}")
-def delete_user_by_email(email: str, db: Session = Depends(get_db)):
-    """Temporary admin endpoint - DELETE THIS AFTER USE"""
-    from models import Medication, MedicationLog, Streak
-    
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    # Delete in correct order
-    db.query(MedicationLog).filter(
-        MedicationLog.medication_id.in_(
-            db.query(Medication.id).filter(Medication.user_id == user.id)
-        )
-    ).delete(synchronize_session=False)
-    
-    db.query(Streak).filter(
-        Streak.medication_id.in_(
-            db.query(Medication.id).filter(Medication.user_id == user.id)
-        )
-    ).delete(synchronize_session=False)
-    
-    db.query(Medication).filter(Medication.user_id == user.id).delete()
-    db.query(User).filter(User.id == user.id).delete()
-    
-    db.commit()
-    return {"message": f"User {email} deleted"}
