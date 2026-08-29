@@ -11,3 +11,4 @@ pydantic[email]
 psycopg2-binary
 resend
 python-multipart
+sib-api-v3-sdk

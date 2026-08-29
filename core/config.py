@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     SENDER_EMAIL:str
     GMAIL_PASSWORD:str
 
-    RESEND_API_KEY:str
+    BREVO_API_KEY: str = ""
+
 
     model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parent.parent / ".env")
 
