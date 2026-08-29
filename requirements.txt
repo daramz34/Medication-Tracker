@@ -9,4 +9,5 @@ starlette==1.6.0
 uvicorn[standard]
 pydantic[email]
 psycopg2-binary
+resend
 python-multipart
