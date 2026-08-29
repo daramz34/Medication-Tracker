@@ -1,67 +1,59 @@
-from core.config import settings
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
+from core.config import settings
+
+
+def _dispatch_email(to_email: str, subject: str, body_text: str):
+    """Internal helper to construct and send email via Gmail SMTP."""
+    message = MIMEMultipart()
+    message["From"] = formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
+    message["To"] = to_email.strip()
+    message["Subject"] = subject
+    message.attach(MIMEText(body_text, "plain"))
+
+    try:
+        print(f"Connecting to SMTP server for {to_email}...")
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
+            server.starttls()
+            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
+            server.sendmail(settings.SENDER_EMAIL, to_email.strip(), message.as_string())
+        print(f"Email sent successfully to {to_email}")
+    except smtplib.SMTPAuthenticationError as auth_err:
+        print(f"SMTP Auth Error: Check your SENDER_EMAIL and GMAIL_PASSWORD. {auth_err}")
+    except Exception as e:
+        print(f"Failed to send email to {to_email}. Error: {e}")
 
 
 def send_reminder_email(user_email, username, medication_name, dosage, reminder_time):
-    message = MIMEMultipart()
-    formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
-    message["To"] = user_email.strip()
-    message["Subject"] = f"Medication Reminder — {medication_name}"
-
-    body_text = f"Hi {username}, \n \n This is a reminder to take your medication. \n Medication: {medication_name} \n Dosage: {dosage} \n Scheduled time: {reminder_time} \n Stay consistent — your health depends on it! \n \n D Medication Tracker"
-    message.attach(MIMEText(body_text, "plain"))
-
-    try:
-        print("Connecting to SMTP server.....")
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-
-            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
-
-            server.sendmail(settings.SENDER_EMAIL, user_email, message.as_string())
-
-        print("Email Sent successfully")
-
-    except Exception as e:
-        print(f"Failed to send email. Error: {e}")
-
+    subject = f"Medication Reminder — {medication_name}"
+    body_text = (
+        f"Hi {username},\n\n"
+        f"This is a reminder to take your medication.\n"
+        f"Medication: {medication_name}\n"
+        f"Dosage: {dosage}\n"
+        f"Scheduled time: {reminder_time}\n"
+        f"Stay consistent — your health depends on it!\n\n"
+        f"D-Med Tracker"
+    )
+    _dispatch_email(user_email, subject, body_text)
 
 
 def send_completion_email(user_email, username, medication_name):
-    message = MIMEMultipart()
-    formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
-    message["To"] = user_email.strip()
-    message["Subject"] = f"Course Completed — {medication_name}"
-
-    body_text = f"Hi {username}, \n \n Congratulations! You have completed your medication course. \n Medication: {medication_name} \n Well done for staying consistent.  \n \n D Medication Tracker"
-    message.attach(MIMEText(body_text, "plain"))
-
-    try:
-        print("Connecting to SMTP server.....")
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-
-            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
-
-            server.sendmail(settings.SENDER_EMAIL, user_email, message.as_string())
-
-        print("Email Sent successfully")
-
-    except Exception as e:
-        print(f"Failed to send email. Error: {e}")
-    
-
+    subject = f"Course Completed — {medication_name}"
+    body_text = (
+        f"Hi {username},\n\n"
+        f"Congratulations! You have completed your medication course.\n"
+        f"Medication: {medication_name}\n"
+        f"Well done for staying consistent.\n\n"
+        f"D-Med Tracker"
+    )
+    _dispatch_email(user_email, subject, body_text)
 
 
 def send_welcome_email(user_email: str, username: str):
-    message = MIMEMultipart()
-    message["From"] = formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
-    message["To"] = user_email.strip()
-    message["Subject"] = "Welcome to D-Med Tracker 💊"
-
+    subject = "Welcome to D-Med Tracker 💊"
     body_text = f"""Hi {username},
 
         Welcome to D-Med Tracker!
@@ -78,14 +70,4 @@ def send_welcome_email(user_email: str, username: str):
 
         D-Med Tracker
         """
-    message.attach(MIMEText(body_text, "plain"))
-
-    try:
-        print("Connecting to SMTP server.....")
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
-            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
-            server.sendmail(settings.SENDER_EMAIL, user_email, message.as_string())
-        print("Email sent successfully")
-    except Exception as e:
-        print(f"Failed to send email. Error: {e}")
+    _dispatch_email(user_email, subject, body_text)
