@@ -10,7 +10,6 @@ scheduler = BackgroundScheduler()
 WAT = timezone(timedelta(hours=1)) 
 
 def get_reminder_times(frequency, reminder_time):
-    """Generates scheduled hour triggers based on medication frequency."""
     if not reminder_time:
         return []
 
@@ -19,17 +18,17 @@ def get_reminder_times(frequency, reminder_time):
     else:
         base_hour = int(str(reminder_time).split(":")[0])
 
-    if frequency == Frequency.once_daily:
+    # convert to string for safe comparison
+    freq_str = frequency.value if hasattr(frequency, 'value') else str(frequency)
+
+    if freq_str == "once_daily":
         return [base_hour]
-    elif frequency == Frequency.twice_daily:
-        # Morning and evening (12-hour offset)
+    elif freq_str == "twice_daily":
         return [base_hour, (base_hour + 12) % 24]
-    elif frequency == Frequency.three_times_daily:
-        # Morning, afternoon, evening (6-hour offsets)
+    elif freq_str == "three_times_daily":
         return [base_hour, (base_hour + 6) % 24, (base_hour + 12) % 24]
 
     return [base_hour]
-
 
 def check_and_send_reminders():
     db = SessionLocal()
