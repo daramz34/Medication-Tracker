@@ -20,10 +20,16 @@ def register(user: UserCreate, db:Session=Depends(get_db)):
         )
 
     db_user = create_user(db, user)
-    send_welcome_email(db_user.email, db_user.username)
+    
+    # Send welcome email with error handling
+    try:
+        send_welcome_email(db_user.email, db_user.username)
+        print(f"Welcome email sent to {db_user.email}")
+    except Exception as e:
+        print(f"Welcome email failed: {e}")
+        # Don't fail registration if email fails
 
     return db_user
-
 
 @router.post("/login", response_model=TokenResponse, description="User Login")
 def login(request: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get_db)):

@@ -71,26 +71,27 @@ const DMed = (() => {
     loginTab.addEventListener("click", () => { mode = "login"; render(); });
     registerTab.addEventListener("click", () => { mode = "register"; render(); });
     form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const error = $("#auth-error");
-      error.textContent = "";
-      submit.disabled = true;
-      try {
-        const data = new FormData(form);
-        if (mode === "register") {
-          await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
-          await DMedAPI.login(data.get("username"), data.get("password"));
-        } else {
-          await DMedAPI.login(data.get("username"), data.get("password"));
-        }
-        const next = new URLSearchParams(window.location.search).get("next") || "/app";
-        window.location.href = next;
-      } catch (err) {
-        error.textContent = err.message;
-      } finally {
-        submit.disabled = false;
-      }
-    });
+  event.preventDefault();
+  const error = $("#auth-error");
+  error.textContent = "";
+  submit.disabled = true;
+  submit.textContent = mode === "register" ? "Creating account..." : "Signing in...";
+  try {
+    const data = new FormData(form);
+    if (mode === "register") {
+      await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
+      await DMedAPI.login(data.get("username"), data.get("password"));
+    } else {
+      await DMedAPI.login(data.get("username"), data.get("password"));
+    }
+    const next = new URLSearchParams(window.location.search).get("next") || "/app";
+    window.location.href = next;
+  } catch (err) {
+    error.textContent = err.message;
+    submit.disabled = false; // Only re-enable on error
+  }
+});
+
     render();
   }
 
