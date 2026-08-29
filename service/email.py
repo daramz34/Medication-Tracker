@@ -1,83 +1,66 @@
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.utils import formataddr
+import resend
 from core.config import settings
 
-
-def _dispatch_email(to_email: str, subject: str, body_text: str):
-    """Internal helper to construct and send email via Gmail SMTP."""
-    message = MIMEMultipart()
-    message["From"] = formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
-    message["To"] = to_email.strip()
-    message["Subject"] = subject
-    message.attach(MIMEText(body_text, "plain"))
-
-    try:
-        print(f"Connecting to SMTP server for {to_email}...")
-
-        with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
-            server.starttls()
-            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
-            server.sendmail(
-                settings.SENDER_EMAIL,
-                to_email.strip(),
-                message.as_string()
-            )
-
-        print(f"Email sent successfully to {to_email}")
-
-    except smtplib.SMTPAuthenticationError as auth_err:
-        print(f"SMTP Auth Error: {auth_err}")
-        raise
-
-    except Exception as e:
-        print(f"Failed to send email to {to_email}. Error: {e}")
-        raise
-
-    
-def send_reminder_email(user_email, username, medication_name, dosage, reminder_time):
-    subject = f"Medication Reminder — {medication_name}"
-    body_text = (
-        f"Hi {username},\n\n"
-        f"This is a reminder to take your medication.\n"
-        f"Medication: {medication_name}\n"
-        f"Dosage: {dosage}\n"
-        f"Scheduled time: {reminder_time}\n"
-        f"Stay consistent — your health depends on it!\n\n"
-        f"D-Med Tracker"
-    )
-    _dispatch_email(user_email, subject, body_text)
+resend.api_key = settings.RESEND_API_KEY
 
 
-def send_completion_email(user_email, username, medication_name):
-    subject = f"Course Completed — {medication_name}"
-    body_text = (
-        f"Hi {username},\n\n"
-        f"Congratulations! You have completed your medication course.\n"
-        f"Medication: {medication_name}\n"
-        f"Well done for staying consistent.\n\n"
-        f"D-Med Tracker"
-    )
-    _dispatch_email(user_email, subject, body_text)
+def send_reminder_email(user_email: str, username: str, medication_name: str, dosage: str, reminder_time: str):
+    resend.Emails.send({
+        "from": "D-Med Tracker <onboarding@resend.dev>",
+        "to": user_email,
+        "subject": f"Medication Reminder — {medication_name}",
+        "text": f"""Hi {username},
+
+This is a reminder to take your medication.
+
+Medication: {medication_name}
+Dosage: {dosage}
+Scheduled time: {reminder_time}
+
+Stay consistent — your health depends on it!
+
+D-Med Tracker"""
+    })
+    print(f"Reminder email sent to {user_email}")
+
+
+def send_completion_email(user_email: str, username: str, medication_name: str):
+    resend.Emails.send({
+        "from": "D-Med Tracker <onboarding@resend.dev>",
+        "to": user_email,
+        "subject": f"Course Completed — {medication_name}",
+        "text": f"""Hi {username},
+
+Congratulations! You have completed your medication course.
+
+Medication: {medication_name}
+
+Well done for staying consistent.
+
+D-Med Tracker"""
+    })
+    print(f"Completion email sent to {user_email}")
 
 
 def send_welcome_email(user_email: str, username: str):
-    subject = "Welcome to D-Med Tracker 💊"
-    body_text = f"""Hi {username},
+    resend.Emails.send({
+        "from": "D-Med Tracker <onboarding@resend.dev>",
+        "to": user_email,
+        "subject": "Welcome to D-Med Tracker 💊",
+        "text": f"""Hi {username},
 
-        Welcome to D-Med Tracker!
+Welcome to D-Med Tracker!
 
-        You're all set to start tracking your medications and building healthy habits.
+You're all set to start tracking your medications and building healthy habits.
 
-        Here's what you can do:
-        - Add your medications and dosage schedule
-        - Log when you take them daily
-        - Track your streak and stay consistent
-        - Get email reminders so you never miss a dose
+Here's what you can do:
+- Add your medications and dosage schedule
+- Log when you take them daily
+- Track your streak and stay consistent
+- Get email reminders so you never miss a dose
 
-        Stay consistent — your health depends on it!
+Stay consistent — your health depends on it!
 
-        D-Med Tracker
-        """
-    _dispatch_email(user_email, subject, body_text)
+D-Med Tracker"""
+    })
+    print(f"Welcome email sent to {user_email}")

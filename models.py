@@ -45,8 +45,8 @@ class Medication(Base):
 class MedicationLog(Base):
     __tablename__ = "logs"
     id = Column(Integer, primary_key=True)
-    medication_id = Column(Integer, ForeignKey("medications.id"), nullable=False)  # foreignkey
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False) # foreignkey
+    medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)  # foreignkey
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False) # foreignkey
     date = Column(Date, default=date.today, nullable=False)
     status = Column(Enum(LogStatus), nullable=False)
     taken_at = Column(Time, nullable=True)
@@ -60,7 +60,7 @@ class MedicationLog(Base):
 class Streak(Base):
     __tablename__ = "streaks"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     current_streak = Column(Integer, default=0)
     longest_streak = Column(Integer, default=0)
