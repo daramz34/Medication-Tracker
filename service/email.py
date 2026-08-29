@@ -15,17 +15,27 @@ def _dispatch_email(to_email: str, subject: str, body_text: str):
 
     try:
         print(f"Connecting to SMTP server for {to_email}...")
+
         with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
             server.starttls()
             server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
-            server.sendmail(settings.SENDER_EMAIL, to_email.strip(), message.as_string())
+            server.sendmail(
+                settings.SENDER_EMAIL,
+                to_email.strip(),
+                message.as_string()
+            )
+
         print(f"Email sent successfully to {to_email}")
+
     except smtplib.SMTPAuthenticationError as auth_err:
-        print(f"SMTP Auth Error: Check your SENDER_EMAIL and GMAIL_PASSWORD. {auth_err}")
+        print(f"SMTP Auth Error: {auth_err}")
+        raise
+
     except Exception as e:
         print(f"Failed to send email to {to_email}. Error: {e}")
+        raise
 
-
+    
 def send_reminder_email(user_email, username, medication_name, dosage, reminder_time):
     subject = f"Medication Reminder — {medication_name}"
     body_text = (

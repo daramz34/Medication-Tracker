@@ -76,7 +76,8 @@ def check_and_complete_medications():
 
 
 def start_scheduler():
-    scheduler.add_job(check_and_send_reminders, 'interval', hours=1)
+    scheduler.add_job(check_and_send_reminders, 'interval', minutes=1)
     scheduler.add_job(check_and_complete_medications, 'cron', hour=0, minute=0)
     scheduler.start()
     print("Scheduler started")
+    
