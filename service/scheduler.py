@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta, timezone
 from apscheduler.schedulers.background import BackgroundScheduler
 from database import SessionLocal
 from enums import Frequency, MedicationStatus
@@ -7,7 +7,7 @@ from service.email import send_completion_email, send_reminder_email
 
 scheduler = BackgroundScheduler()
 
-
+WAT = timezone(timedelta(hours=1))  # West Africa Time (WAT) is UTC+1
 def get_reminder_times(frequency, reminder_time):
     """Generates scheduled hour triggers based on medication frequency."""
     if not reminder_time:
@@ -33,7 +33,7 @@ def get_reminder_times(frequency, reminder_time):
 def check_and_send_reminders():
     db = SessionLocal()
     try:
-        now = datetime.now()
+        now = datetime.now(WAT)
         current_hour = now.hour
         current_minute = now.minute
 
@@ -89,7 +89,7 @@ def check_and_send_reminders():
 def check_and_complete_medications():
     db = SessionLocal()
     try:
-        today = date.today()
+        today = datetime.now(WAT).date()
 
         medications = (
             db.query(Medication)
