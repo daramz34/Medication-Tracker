@@ -38,7 +38,7 @@ class Medication(Base):
 
 
     user = relationship("User", back_populates="medication")
-    log = relationship("MedicationLog", back_populates="medication")
+    log = relationship("MedicationLog", back_populates="medication", cascade="all, delete-orphan")
     streak = relationship("Streak", back_populates="medication")
 
 
