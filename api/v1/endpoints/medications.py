@@ -22,7 +22,10 @@ def create_med(med: MedicationCreate, db: Session = Depends(get_db),  current_us
 
 @router.get("/", response_model=list[MedicatedResponse], status_code=status.HTTP_200_OK, description="Get meds")
 def get_all_meds(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_all_medications(db, current_user)
+    meds = get_all_medications(db, current_user)
+    if not meds:
+        raise HTTPException(status_code=404, detail="No medications found")
+    return meds
 
 
 @router.get("/{med_id}", response_model=MedicatedResponse, status_code=status.HTTP_200_OK, description="Get med by id")
