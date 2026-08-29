@@ -26,7 +26,19 @@ const DMedAPI = (() => {
     tokenKey,
     isAuthenticated: () => Boolean(localStorage.getItem(tokenKey)),
     logout: () => localStorage.removeItem(tokenKey),
-    register: (data) => request("/auth/register", { method: "POST", body: JSON.stringify(data) }),
+    register: (data) =>{
+  // Ensure we don't send empty strings for required fields
+              const payload = {
+                username: data.username?.trim(),
+                email: data.email?.trim(),
+                password: data.password
+              };
+
+              return request("/auth/register", {
+                method: "POST",
+                body: JSON.stringify(payload)
+              });
+            },
     login: async (username, password) => {
       const body = new URLSearchParams({ username, password });
       const result = await request("/auth/login", {
