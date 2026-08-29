@@ -7,7 +7,8 @@ from service.email import send_completion_email, send_reminder_email
 
 scheduler = BackgroundScheduler()
 
-WAT = timezone(timedelta(hours=1)) 
+WAT = timezone(timedelta(hours=1))
+
 
 def get_reminder_times(frequency, reminder_time):
     if not reminder_time:
@@ -18,8 +19,7 @@ def get_reminder_times(frequency, reminder_time):
     else:
         base_hour = int(str(reminder_time).split(":")[0])
 
-    # convert to string for safe comparison
-    freq_str = frequency.value if hasattr(frequency, 'value') else str(frequency)
+    freq_str = frequency.value if hasattr(frequency, "value") else str(frequency)
 
     if freq_str == "once_daily":
         return [base_hour]
@@ -30,8 +30,10 @@ def get_reminder_times(frequency, reminder_time):
 
     return [base_hour]
 
+
 def check_and_send_reminders():
     db = SessionLocal()
+    sent_this_run = set()
     try:
         now = datetime.now(WAT)
         current_hour = now.hour
@@ -50,35 +52,27 @@ def check_and_send_reminders():
             if medication.reminder_time is None:
                 continue
 
-            # Safely extract minute offset from reminder_time
             if hasattr(medication.reminder_time, "minute"):
                 med_minute = medication.reminder_time.minute
             else:
                 parts = str(medication.reminder_time).split(":")
                 med_minute = int(parts[1]) if len(parts) > 1 else 0
 
-            # Get target hours based on daily frequency
             target_hours = get_reminder_times(
                 medication.frequency, medication.reminder_time
             )
-            now = datetime.now(WAT)
-            current_time = now.strftime("%H:%M")
-            if hasattr(medication.reminder_time, "hour"):
-                med_time = f"{medication.reminder_time.hour:02d}:{med_minute:02d}"
-            else:
-                med_time = str(medication.reminder_time)[:5]
 
-            # add this print
-            print(f"Checking {medication.name} — current: {current_time}, med_time: {med_time}")
+            # 2-minute window check
+            if current_hour in target_hours and abs(current_minute - med_minute) <= 2:
+                # Dedupe: skip if already sent this hour for this med+time combo
+                send_key = f"{medication.id}_{medication.reminder_time}_{current_hour}"
+                if send_key in sent_this_run:
+                    continue
+                sent_this_run.add(send_key)
 
-
-            # Check if current hour matches any scheduled slots AND exact minute matches
-            if current_hour in target_hours and current_minute == med_minute:
-                user = (
-                    db.query(User).filter(User.id == medication.user_id).first()
-                )
+                user = db.query(User).filter(User.id == medication.user_id).first()
                 if user:
-                    formatted_time = f"{current_hour:02d}:{med_minute:02d}"
+                    formatted_time = f"{medication.reminder_time.hour:02d}:{med_minute:02d}"
                     send_reminder_email(
                         user_email=user.email,
                         username=user.username,
@@ -89,7 +83,6 @@ def check_and_send_reminders():
                     print(
                         f"Reminder sent to {user.email} for {medication.name} at {formatted_time}"
                     )
-            
 
     except Exception as e:
         print(f"Reminder job failed: {e}")
