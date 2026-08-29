@@ -290,6 +290,30 @@ button.button-primary {
 .modal { background: #fff; border-radius: 18px; max-height: 90vh; max-width: 560px; overflow: auto; padding: 27px; width: 100%; }
 .modal-header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 20px; }
 .modal-header h2 { font-size: 1.35rem; }
+/* ── Log status button colors ── */
+.log-actions .js-log-status[data-status="taken"] {
+  background: #dcf5ef;
+  color: #08766d;
+}
+.log-actions .js-log-status[data-status="taken"]:hover {
+  background: #b4eddc;
+}
+
+.log-actions .js-log-status[data-status="missed"] {
+  background: #fff0ed;
+  color: #bd6255;
+}
+.log-actions .js-log-status[data-status="missed"]:hover {
+  background: #ffdcd6;
+}
+
+.log-actions .js-log-status[data-status="skipped"] {
+  background: #fff7df;
+  color: #9b762c;
+}
+.log-actions .js-log-status[data-status="skipped"]:hover {
+  background: #ffedaf;
+}
 
 @media (max-width: 900px) {
   .hero-grid { gap: 25px; grid-template-columns: 1fr; }
