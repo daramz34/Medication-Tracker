@@ -118,8 +118,8 @@ def get_today_logs(db: Session, current_user: User):
         MedicationLog.user_id == current_user.id,
         MedicationLog.date == date.today()
     ).all()
-
-    return db_log
+    
+    return db_log or [] 
 def get_medication_logs(db:Session, med_id: int, current_user: User):
     db_log  = db.query(MedicationLog).filter(MedicationLog.medication_id == med_id,
                                              MedicationLog.user_id == current_user.id).all()
