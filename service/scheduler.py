@@ -7,7 +7,8 @@ from service.email import send_completion_email, send_reminder_email
 
 scheduler = BackgroundScheduler()
 
-WAT = timezone(timedelta(hours=1))  # West Africa Time (WAT) is UTC+1
+WAT = timezone(timedelta(hours=1)) 
+
 def get_reminder_times(frequency, reminder_time):
     """Generates scheduled hour triggers based on medication frequency."""
     if not reminder_time:
@@ -61,6 +62,16 @@ def check_and_send_reminders():
             target_hours = get_reminder_times(
                 medication.frequency, medication.reminder_time
             )
+            now = datetime.now(WAT)
+            current_time = now.strftime("%H:%M")
+            if hasattr(medication.reminder_time, "hour"):
+                med_time = f"{medication.reminder_time.hour:02d}:{med_minute:02d}"
+            else:
+                med_time = str(medication.reminder_time)[:5]
+
+            # add this print
+            print(f"Checking {medication.name} — current: {current_time}, med_time: {med_time}")
+
 
             # Check if current hour matches any scheduled slots AND exact minute matches
             if current_hour in target_hours and current_minute == med_minute:

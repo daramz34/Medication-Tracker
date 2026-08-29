@@ -39,7 +39,7 @@ class Medication(Base):
 
     user = relationship("User", back_populates="medication")
     log = relationship("MedicationLog", back_populates="medication", cascade="all, delete-orphan")
-    streak = relationship("Streak", back_populates="medication")
+    streak = relationship("Streak", back_populates="medication", cascade="all, delete-orphan")
 
 
 class MedicationLog(Base):
@@ -61,7 +61,7 @@ class Streak(Base):
     __tablename__ = "streaks"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    medication_id = Column(Integer, ForeignKey("medications.id"), nullable=False)
+    medication_id = Column(Integer, ForeignKey("medications.id", ondelete="CASCADE"), nullable=False)
     current_streak = Column(Integer, default=0)
     longest_streak = Column(Integer, default=0)
     total_taken = Column(Integer, default=0)
