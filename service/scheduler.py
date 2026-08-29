@@ -82,6 +82,10 @@ def check_and_send_reminders():
 
     except Exception as e:
         print(f"Reminder job failed: {e}")
+    except Exception as e:
+        print(f"Reminder job failed: {e}")
+        import traceback
+        traceback.print_exc()
     finally:
         db.close()
 
