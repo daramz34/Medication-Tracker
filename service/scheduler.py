@@ -33,7 +33,6 @@ def get_reminder_times(frequency, reminder_time):
 
 def check_and_send_reminders():
     db = SessionLocal()
-    sent_this_run = set()
     try:
         now = datetime.now(WAT)
         current_hour = now.hour
@@ -62,13 +61,14 @@ def check_and_send_reminders():
                 medication.frequency, medication.reminder_time
             )
 
-            # 2-minute window check
+            # Check if within 2-minute window
             if current_hour in target_hours and abs(current_minute - med_minute) <= 2:
-                # Dedupe: skip if already sent this hour for this med+time combo
-                send_key = f"{medication.id}_{medication.reminder_time}_{current_hour}"
-                if send_key in sent_this_run:
-                    continue
-                sent_this_run.add(send_key)
+                # Check if we already sent this reminder today
+                if medication.last_reminder_sent:
+                    last_sent = medication.last_reminder_sent.replace(tzinfo=WAT)
+                    # Skip if sent in the last 50 minutes (prevents duplicates within the hour)
+                    if (now - last_sent).total_seconds() < 3000:  # 50 minutes
+                        continue
 
                 user = db.query(User).filter(User.id == medication.user_id).first()
                 if user:
@@ -80,9 +80,11 @@ def check_and_send_reminders():
                         dosage=medication.dosage,
                         reminder_time=formatted_time,
                     )
-                    print(
-                        f"Reminder sent to {user.email} for {medication.name} at {formatted_time}"
-                    )
+                    print(f"Reminder sent to {user.email} for {medication.name} at {formatted_time}")
+                    
+                    # Update last_sent timestamp
+                    medication.last_reminder_sent = now
+                    db.commit()
 
     except Exception as e:
         print(f"Reminder job failed: {e}")

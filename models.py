@@ -31,6 +31,8 @@ class Medication(Base):
     duration_days = Column(Integer, nullable=False)
     start_date = Column(Date, default=date.today, nullable=False)
     end_date = Column(Date, nullable=True)
+    last_reminder_sent = Column(DateTime, nullable=True)
+
     status = Column(Enum(MedicationStatus), default=MedicationStatus.active, nullable=False)
     reminder_time = Column(Time, nullable=False)
     reminder_enabled = Column(Boolean, default=True, nullable=False)
