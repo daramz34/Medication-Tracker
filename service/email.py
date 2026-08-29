@@ -9,7 +9,7 @@ api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
     sib_api_v3_sdk.ApiClient(configuration)
 )
 
-SENDER_EMAIL = "your_verified_gmail_here@gmail.com"  # ← your Brevo-verified email
+SENDER_EMAIL = "darasimirotimi@gmail.com"  # ← your Brevo-verified email
 SENDER_NAME = "D-Med Tracker"
 
 def _send_email(to_email: str, subject: str, text_content: str):
