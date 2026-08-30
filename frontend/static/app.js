@@ -1,3 +1,14 @@
+/* Helper: calculate reminder times based on frequency */
+function calcReminderTimes(frequency, timeStr) {
+  if (!timeStr) return [];
+  const [h, m] = timeStr.split(":").map(Number);
+  const pad = (n) => `${String(n % 24).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  if (frequency === "once_daily") return [pad(h)];
+  if (frequency === "twice_daily") return [pad(h), pad((h + 12) % 24)];
+  if (frequency === "three_times_daily") return [pad(h), pad((h + 6) % 24), pad((h + 12) % 24)];
+  return [pad(h)];
+}
+
 const DMed = (() => {
   const $ = (selector, parent = document) => parent.querySelector(selector);
   const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
@@ -44,6 +55,7 @@ const DMed = (() => {
     if (menu) menu.onclick = () => $(".sidebar").classList.toggle("open");
   };
 
+  /* ── Auth ── */
   function setupAuth() {
     const form = $("#auth-form");
     if (!form) return;
@@ -71,30 +83,31 @@ const DMed = (() => {
     loginTab.addEventListener("click", () => { mode = "login"; render(); });
     registerTab.addEventListener("click", () => { mode = "register"; render(); });
     form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const error = $("#auth-error");
-  error.textContent = "";
-  submit.disabled = true;
-  submit.textContent = mode === "register" ? "Creating account..." : "Signing in...";
-  try {
-    const data = new FormData(form);
-    if (mode === "register") {
-      await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
-      await DMedAPI.login(data.get("username"), data.get("password"));
-    } else {
-      await DMedAPI.login(data.get("username"), data.get("password"));
-    }
-    const next = new URLSearchParams(window.location.search).get("next") || "/app";
-    window.location.href = next;
-  } catch (err) {
-    error.textContent = err.message;
-    submit.disabled = false; // Only re-enable on error
-  }
-});
-
+      event.preventDefault();
+      const error = $("#auth-error");
+      error.textContent = "";
+      submit.disabled = true;
+      submit.textContent = mode === "register" ? "Creating account..." : "Signing in...";
+      try {
+        const data = new FormData(form);
+        if (mode === "register") {
+          await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
+          await DMedAPI.login(data.get("username"), data.get("password"));
+        } else {
+          await DMedAPI.login(data.get("username"), data.get("password"));
+        }
+        const next = new URLSearchParams(window.location.search).get("next") || "/app";
+        window.location.href = next;
+      } catch (err) {
+        error.textContent = err.message;
+        submit.disabled = false;
+        submit.textContent = mode === "register" ? "Create account" : "Sign in";
+      }
+    });
     render();
   }
 
+  /* ── Dashboard card ── */
   const medicationCard = (med, log) => {
     const logged = log && log.status;
     return `<article class="med-row">
@@ -105,6 +118,7 @@ const DMed = (() => {
     </article>`;
   };
 
+  /* ── Dashboard ── */
   async function setupDashboard() {
     if (!requireAuth()) return;
     setUserChrome();
@@ -136,13 +150,14 @@ const DMed = (() => {
           $("#progress-fill").style.width = `${Math.min(100, streak.completion_percentage || 0)}%`;
           $("#current-streak").textContent = `${streak.current_streak || 0} day${streak.current_streak === 1 ? "" : "s"}`;
           $("#longest-streak").textContent = `${streak.longest_streak || 0} days`;
-        } catch (_) { /* an empty streak is still a valid dashboard state */ }
+        } catch (_) {}
       }
     } catch (err) {
       list.innerHTML = `<div class="empty-state">${escape(err.message)}</div>`;
     }
   }
 
+  /* ── Medication form data ── */
   function medicationFormData(form) {
     const data = new FormData(form);
     return {
@@ -153,6 +168,7 @@ const DMed = (() => {
     };
   }
 
+  /* ── Modal ── */
   function openMedicationModal(med = null) {
     const backdrop = $("#med-modal");
     if (!backdrop) return;
@@ -171,8 +187,34 @@ const DMed = (() => {
       form.elements.start_date.value = new Date().toISOString().slice(0, 10);
       form.elements.reminder_enabled.checked = true;
     }
+
+    /* ── Reminder time hint (Option A) ── */
+    const reminderInput = form.elements.reminder_time;
+    const freqSelect = form.elements.frequency;
+    const hint = document.getElementById("reminder-hint");
+
+    function updateReminderHint() {
+      const times = calcReminderTimes(freqSelect.value, reminderInput.value);
+      if (times.length > 1 && hint) {
+        const pretty = times.map((t) => {
+          const [hr, min] = t.split(":").map(Number);
+          const ampm = hr >= 12 ? "PM" : "AM";
+          const h12 = hr % 12 || 12;
+          return `${h12}:${String(min).padStart(2, "0")} ${ampm}`;
+        });
+        hint.textContent = `You'll be reminded at: ${pretty.join(", ")}`;
+        hint.classList.remove("hidden");
+      } else if (hint) {
+        hint.classList.add("hidden");
+      }
+    }
+
+    reminderInput?.addEventListener("change", updateReminderHint);
+    freqSelect?.addEventListener("change", updateReminderHint);
+    updateReminderHint();
   }
 
+  /* ── Medications page ── */
   async function setupMedications() {
     if (!requireAuth()) return;
     setUserChrome();
@@ -242,6 +284,7 @@ const DMed = (() => {
     } catch (err) { list.innerHTML = `<div class="empty-state">${escape(err.message)}</div>`; }
   }
 
+  /* ── Details page ── */
   async function setupDetails() {
     if (!requireAuth()) return;
     setUserChrome();
@@ -271,11 +314,13 @@ const DMed = (() => {
     } catch (err) { $("#detail-error").textContent = err.message; $("#detail-error").classList.remove("hidden"); }
   }
 
+  /* ── Settings ── */
   function setupSettings() {
     if (!requireAuth()) return;
     setUserChrome();
   }
 
+  /* ── Init ── */
   document.addEventListener("DOMContentLoaded", () => {
     const page = document.body.dataset.page;
     if (page === "auth") setupAuth();

@@ -314,7 +314,20 @@ button.button-primary {
 .log-actions .js-log-status[data-status="skipped"]:hover {
   background: #ffedaf;
 }
+.med-desc {
+  font-size: .78rem;
+  color: #6c7a89;
+  margin: 3px 0 0;
+}
 
+/* ── Reminder time hint ── */
+.reminder-hint {
+  display: block;
+  font-size: .78rem;
+  color: #0d9488;
+  margin-top: 4px;
+  padding-left: 2px;
+}
 @media (max-width: 900px) {
   .hero-grid { gap: 25px; grid-template-columns: 1fr; }
   .hero-art { min-height: 340px; }

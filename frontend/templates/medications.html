@@ -17,6 +17,7 @@
       <div class="form-field"><label for="med-description">Description</label><textarea id="med-description" name="description" placeholder="Any helpful details"></textarea></div>
       <div class="form-row"><div class="form-field"><label for="med-frequency">Frequency</label><select id="med-frequency" name="frequency" required><option value="daily">Once daily</option><option value="twice_daily">Twice daily</option><option value="three_times_daily">Three times daily</option></select></div><div class="form-field"><label for="med-duration">Duration (days)</label><input id="med-duration" name="duration_days" type="number" min="1" required placeholder="30"></div></div>
       <div class="form-row"><div class="form-field"><label for="med-start">Start date</label><input id="med-start" name="start_date" type="date" required></div><div class="form-field"><label for="med-time">Reminder time</label><input id="med-time" name="reminder_time" type="time" required></div></div>
+      <small id="reminder-hint" class="reminder-hint hidden"></small>
       <label class="checkbox"><input name="reminder_enabled" type="checkbox" checked> Remind me by email</label><button id="save-medication" class="button button-primary form-submit" type="submit">Save medication</button>
     </form>
   </section></div><div id="toast" class="toast" role="status"></div>

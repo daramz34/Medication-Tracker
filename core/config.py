@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     BREVO_API_KEY: str = ""
 
 
-    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parent.parent / ".env")
+    model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parent.parent / ".env", extra="ignore")
 
 
 settings = Settings()
